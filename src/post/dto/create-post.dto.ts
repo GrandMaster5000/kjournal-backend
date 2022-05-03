@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreatePostDto {
 	@IsString()
@@ -7,7 +7,7 @@ export class CreatePostDto {
 	@IsString()
 	body: string;
 
-	@IsArray()
-	@IsString({ each: true })
-	tags: string[];
+	@IsOptional()
+	@IsString()
+	tags?: string;
 }

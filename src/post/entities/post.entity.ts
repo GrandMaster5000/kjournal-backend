@@ -1,5 +1,4 @@
 import {
-	BeforeUpdate,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -18,8 +17,11 @@ export class PostEntity {
 	@Column()
 	body: string;
 
-	@Column({ nullable: true, type: 'simple-array' })
-	tags?: string[];
+	@Column({ default: 0 })
+	views: number;
+
+	@Column({ nullable: true })
+	tags?: string;
 
 	@CreateDateColumn({ type: 'timestamp' })
 	createdAt: Date;

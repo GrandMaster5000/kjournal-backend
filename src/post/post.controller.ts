@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
+import { SequenceResponce } from '@app/types/sequence-responce.interface';
+import { SearchPostDto } from './dto/search-post.dto';
 
 @Controller('posts')
 export class PostController {
@@ -14,8 +16,18 @@ export class PostController {
 	}
 
 	@Get()
-	async findAll(): Promise<PostEntity[]> {
+	async findAll(): Promise<SequenceResponce<PostEntity>> {
 		return this.postService.findAll();
+	}
+
+	@Get('/popular')
+	async getPopularPosts(): Promise<SequenceResponce<PostEntity>> {
+		return this.postService.findPopular();
+	}
+
+	@Get('/search')
+	async searchPosts(@Query() searchPostDto: SearchPostDto): Promise<SequenceResponce<PostEntity>> {
+		return this.postService.search(searchPostDto);
 	}
 
 	@Get(':id')
