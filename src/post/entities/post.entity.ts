@@ -1,4 +1,5 @@
 import {
+	BeforeUpdate,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -6,19 +7,19 @@ import {
 	UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'users' })
-export class UserEntity {
+@Entity({ name: 'posts' })
+export class PostEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column()
-	fullName: string;
+	title: string;
 
 	@Column()
-	email: string;
+	body: string;
 
-	@Column({ nullable: true })
-	password?: string;
+	@Column({ nullable: true, type: 'simple-array' })
+	tags?: string[];
 
 	@CreateDateColumn({ type: 'timestamp' })
 	createdAt: Date;
