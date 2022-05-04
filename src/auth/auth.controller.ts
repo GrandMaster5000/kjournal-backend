@@ -1,4 +1,3 @@
-import { UserEntity } from '@app/user/entities/user.entity';
 import { Body, Controller, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
@@ -9,7 +8,9 @@ export class AuthController {
 
 	@HttpCode(200)
 	@Post('login')
-	async login(@Body() { email, password }: AuthDto): Promise<UserEntity> {
-		return this.authService.validateUser(email, password);
+	async login(@Body() { email, password }: AuthDto): Promise<{ access_token: string }> {
+		const user = await this.authService.validateUser(email, password);
+
+		return this.authService.login(user);
 	}
 }

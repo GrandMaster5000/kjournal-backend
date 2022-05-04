@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 
@@ -25,7 +24,7 @@ export class UserService {
 		return this.userRepository.findOne(id);
 	}
 
-	findByCond(cond: LoginUserDto): Promise<UserEntity> {
+	findByCond(cond: Partial<UserEntity>): Promise<UserEntity> {
 		return this.userRepository.findOne(cond);
 	}
 
