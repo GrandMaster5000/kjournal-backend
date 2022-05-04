@@ -1,14 +1,10 @@
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 
-export class CreateUserDto {
-	@IsString()
-	fullName: string;
-
+export class LoginUserDto {
 	@IsEmail(undefined, { message: 'Неверный Email' })
 	email: string;
 
-	@IsOptional()
 	@Length(6, 32, { message: 'Пароль должен быть не менее символов' })
 	@IsString()
-	password?: string;
+	password: string;
 }
