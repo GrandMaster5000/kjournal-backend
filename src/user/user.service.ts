@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { USER_EMAIL_NOT_FOUND_ERROR } from '@app/auth/auth.constants';
+import { SequenceResponce } from '@app/types/sequence-responce.interface';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { SearchUserDto } from './dto/search-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 
@@ -16,23 +19,59 @@ export class UserService {
 		return this.userRepository.save(user);
 	}
 
-	findAll(): string {
-		return `This action returns all user`;
+	async findAll(): Promise<UserEntity[]> {
+		return this.userRepository.find();
 	}
 
-	findById(id: number): Promise<UserEntity> {
-		return this.userRepository.findOne(id);
+	async findById(id: number): Promise<UserEntity> {
+		const user = await this.userRepository.findOne(id);
+
+		if (!user) {
+			throw new NotFoundException(USER_EMAIL_NOT_FOUND_ERROR);
+		}
+
+		return user;
 	}
 
-	findByCond(cond: Partial<UserEntity>): Promise<UserEntity> {
-		return this.userRepository.findOne(cond);
+	async findByCond(cond: Partial<UserEntity>): Promise<UserEntity> {
+		const user = await this.userRepository.findOne(cond);
+
+		if (!user) {
+			throw new NotFoundException(USER_EMAIL_NOT_FOUND_ERROR);
+		}
+
+		return user;
 	}
 
-	update(id: number, updateUserDto: UpdateUserDto): string {
-		return `This action updates a #${id} user`;
+	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+		const post = await this.findById(id);
+
+		Object.assign(post, updateUserDto);
+		return this.userRepository.save(post);
 	}
 
-	remove(id: number): string {
-		return `This action removes a #${id} user`;
+	async search(searchPostDto: SearchUserDto): Promise<SequenceResponce<UserEntity>> {
+		const { fullName, email, skip, take } = searchPostDto;
+
+		const qb = this.userRepository.createQueryBuilder('u');
+
+		qb.offset(skip);
+		qb.take(take);
+
+		if (email) {
+			qb.andWhere(`u.body ILIKE :body`, {
+				body: `%${email}%`,
+			});
+		}
+
+		if (fullName) {
+			qb.andWhere(`u.title ILIKE :title`, {
+				title: `%${fullName}%`,
+			});
+		}
+
+		const [items, total] = await qb.getManyAndCount();
+
+		return { items, total };
 	}
 }

@@ -11,13 +11,13 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({ unique: true })
 	fullName: string;
 
-	@Column()
+	@Column({ unique: true })
 	email: string;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, select: false })
 	password?: string;
 
 	@CreateDateColumn({ type: 'timestamp' })
