@@ -4,10 +4,13 @@ import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/c
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { USER_EMAIL_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './auth.constants';
+import {
+	REGISTRATION_ERROR,
+	USER_EMAIL_NOT_FOUND_ERROR,
+	WRONG_PASSWORD_ERROR,
+} from './auth.constants';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { JwtAccessToken } from './types/jwt-access-token.interface';
-import { JwtPayload } from './types/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -46,13 +49,17 @@ export class AuthService {
 		return this.generateJwtToken(user.email, user.id);
 	}
 
-	async register(registerAuthDto: RegisterAuthDto): Promise<JwtAccessToken> {
+	async register({ email, fullName, password }: RegisterAuthDto): Promise<JwtAccessToken> {
 		try {
-			const user = await this.userService.create(registerAuthDto);
+			const user = await this.userService.create({
+				email,
+				fullName,
+				password,
+			});
 
 			return this.generateJwtToken(user.email, user.id);
 		} catch (e) {
-			throw new ForbiddenException();
+			throw new ForbiddenException(REGISTRATION_ERROR);
 		}
 	}
 
