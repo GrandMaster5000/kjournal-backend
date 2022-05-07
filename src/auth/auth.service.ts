@@ -45,11 +45,18 @@ export class AuthService {
 		return result;
 	}
 
-	async login(user: UserEntity): Promise<JwtAccessToken> {
-		return this.generateJwtToken(user.email, user.id);
+	async login(user: UserEntity): Promise<UserEntity & JwtAccessToken> {
+		return {
+			...(await this.generateJwtToken(user.email, user.id)),
+			...user,
+		};
 	}
 
-	async register({ email, fullName, password }: RegisterAuthDto): Promise<JwtAccessToken> {
+	async register({
+		email,
+		fullName,
+		password,
+	}: RegisterAuthDto): Promise<UserEntity & JwtAccessToken> {
 		try {
 			const user = await this.userService.create({
 				email,
@@ -57,7 +64,10 @@ export class AuthService {
 				password,
 			});
 
-			return this.generateJwtToken(user.email, user.id);
+			return {
+				...user,
+				...(await this.generateJwtToken(user.email, user.id)),
+			};
 		} catch (e) {
 			throw new ForbiddenException(REGISTRATION_ERROR);
 		}
