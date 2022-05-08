@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { JwtAuthGuard } from '@app/auth/guards/jwt.guard';
-import { User } from './decorators/user.decorator';
+import { UserId } from './decorators/user.decorator';
 import { SearchUserDto } from './dto/search-user.dto';
 import { SequenceResponce } from '@app/types/sequence-responce.interface';
 
@@ -18,17 +18,17 @@ export class UserController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get('me')
-	async me(@User() currentUser: UserEntity): Promise<UserEntity> {
-		return this.userService.findById(currentUser.id);
+	async me(@UserId() currentUserId: number): Promise<UserEntity> {
+		return this.userService.findById(currentUserId);
 	}
 
 	@UseGuards(JwtAuthGuard)
 	@Patch('me')
 	async update(
-		@User() currentUser: UserEntity,
+		@UserId() currentUserId: number,
 		@Body() updateUserDto: UpdateUserDto,
 	): Promise<UserEntity> {
-		return this.userService.update(currentUser.id, updateUserDto);
+		return this.userService.update(currentUserId, updateUserDto);
 	}
 
 	@Get('search')

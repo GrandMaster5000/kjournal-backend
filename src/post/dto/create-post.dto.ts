@@ -1,13 +1,29 @@
-import { IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+
+export class OutputBlockData {
+	@IsOptional()
+	@IsString()
+	id?: string;
+
+	@IsNotEmpty()
+	type: 'paragraph' | string;
+
+	@IsNotEmpty()
+	data: any;
+}
 
 export class CreatePostDto {
 	@IsString()
 	title: string;
 
-	@IsString()
-	body: string;
+	@IsArray()
+	@ValidateNested()
+	@Type(() => OutputBlockData)
+	body: OutputBlockData[];
 
 	@IsOptional()
-	@IsString()
-	tags?: string;
+	@IsArray()
+	@IsString({ each: true })
+	tags?: string[];
 }

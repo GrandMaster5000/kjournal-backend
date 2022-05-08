@@ -1,4 +1,4 @@
-import { USER_EMAIL_NOT_FOUND_ERROR } from '@app/auth/auth.constants';
+import { USER_EMAIL_NOT_FOUND_ERROR, USER_NOT_FOUND } from '@app/auth/auth.constants';
 import { SequenceResponce } from '@app/types/sequence-responce.interface';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,7 +27,7 @@ export class UserService {
 		const user = await this.userRepository.findOne(id);
 
 		if (!user) {
-			throw new NotFoundException(USER_EMAIL_NOT_FOUND_ERROR);
+			throw new NotFoundException(USER_NOT_FOUND);
 		}
 
 		return user;
