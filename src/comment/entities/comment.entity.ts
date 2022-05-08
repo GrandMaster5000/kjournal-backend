@@ -7,6 +7,7 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn,
 	ManyToOne,
+	JoinColumn,
 } from 'typeorm';
 
 @Entity({ name: 'comment' })
@@ -18,9 +19,11 @@ export class CommentEntity {
 	text: string;
 
 	@ManyToOne(() => UserEntity, { nullable: false })
+	@JoinColumn({ name: 'userId' })
 	user: UserEntity;
 
 	@ManyToOne(() => PostEntity, { nullable: false })
+	@JoinColumn({ name: 'postId' })
 	post: PostEntity;
 
 	@CreateDateColumn({ type: 'timestamp' })

@@ -4,9 +4,10 @@ import { CommentController } from './comment.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from './entities/comment.entity';
 import { PostEntity } from '@app/post/entities/post.entity';
+import { UserModule } from '@app/user/user.module';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([CommentEntity, PostEntity])],
+	imports: [UserModule, TypeOrmModule.forFeature([CommentEntity, PostEntity])],
 	controllers: [CommentController],
 	providers: [CommentService],
 })

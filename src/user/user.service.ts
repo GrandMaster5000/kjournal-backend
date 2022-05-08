@@ -1,4 +1,5 @@
 import { USER_EMAIL_NOT_FOUND_ERROR, USER_NOT_FOUND } from '@app/auth/auth.constants';
+import { CommentEntity } from '@app/comment/entities/comment.entity';
 import { SequenceResponce } from '@app/types/sequence-responce.interface';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,7 +21,16 @@ export class UserService {
 	}
 
 	async findAll(): Promise<UserEntity[]> {
-		return this.userRepository.find();
+		const users = await this.userRepository
+			.createQueryBuilder('u')
+			.leftJoinAndMapMany('u.comments', CommentEntity, 'comment', 'comment.userId = u.id')
+			.loadRelationCountAndMap('u.commentsCount', 'u.comments', 'comments')
+			.getMany();
+
+		return users.map((obj) => {
+			delete obj.comments;
+			return obj;
+		});
 	}
 
 	async findById(id: number): Promise<UserEntity> {
